@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Nerdverse: Aetherfall Vortex - Epic Legendary Campaign</title>
+  <style>
+    :root {
+      --bg: #0d1118;
+      --panel: #171d29;
+      --panel2: #20293a;
+      --text: #edf3ff;
+      --muted: #9eb0cf;
+      --accent: #71d7ff;
+      --gold: #ffc95e;
+      --border: rgba(255,255,255,0.08);
+      --common: #c9d4e8;
+      --uncommon: #7be39a;
+      --rare: #71d7ff;
+      --epic: #c997ff;
+      --legendary: #ffc95e;
+      --mythic: #ff8ee7;
+      --danger: #ff8a8a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Georgia, serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(113,215,255,0.12), transparent 35%),
+        linear-gradient(180deg, #0a0f15, #0d1118 35%, #111827 100%);
+    }
+
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
+
+    .card, .modal-card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015)), var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.34);
+    }
+
+    .hero { padding: 26px; margin-bottom: 18px; }
+
+    h1, h2, h3 {
+      font-family: "Trebuchet MS", sans-serif;
+      margin-top: 0;
+    }
+
+    p { line-height: 1.7; }
+    .muted { color: var(--muted); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+
+    .card { padding: 18px; }
+
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      color: var(--gold);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel2);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .btns, .options, .utility, .combat-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      color: #08121a;
+      background: linear-gradient(135deg, var(--accent), #b7efff);
+    }
+
+    button.alt { background: linear-gradient(135deg, var(--gold), #ffe2a2); }
+    button.dim { background: linear-gradient(135deg, #7e8aa5, #bcc7d8); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
+    .hidden { display: none !important; }
+
+    .game-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 18px;
+    }
+
+    .story-box { min-height: 620px; padding: 22px; }
+
+    .meta {
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-size: 0.96rem;
+    }
+
+    .story-text p { margin: 0 0 1em; }
+
+    .sidebar {
+      display: grid;
+      gap: 16px;
+    }
+
+    .stats-grid {
+      display:grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .stat strong {
+      display:block;
+      color: var(--gold);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .log {
+      min-height: 110px;
+      line-height: 1.65;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(113,215,255,0.18);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .small-list {
+      display:grid;
+      gap: 8px;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    .small-item {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+    }
+
+    .combat-box {
+      margin-top: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,122,122,0.18);
+      background: rgba(255,255,255,0.03);
+      padding: 16px;
+    }
+
+    .enemy-grid {
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(4,8,12,0.76);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal.show { display:flex; }
+
+    .modal-card {
+      width: min(980px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 20px;
+    }
+
+    .ability-row {
+      display:grid;
+      grid-template-columns: 1fr auto auto auto;
+      align-items: center;
+      gap: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+
+    .tiny {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 10px;
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 9px;
+      margin: 0 6px 6px 0;
+      font-size: 0.82rem;
+      color: var(--accent);
+      background: rgba(113,215,255,0.12);
+    }
+
+    .rarity-common { color: var(--common); }
+    .rarity-uncommon { color: var(--uncommon); }
+    .rarity-rare { color: var(--rare); }
+    .rarity-epic { color: var(--epic); }
+    .rarity-legendary { color: var(--legendary); }
+    .rarity-mythic { color: var(--mythic); }
+
+    .mini-map {
+      display: grid;
+      gap: 8px;
+    }
+
+    .map-node {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .map-node.current {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(113,215,255,0.25) inset;
+    }
+
+    .map-node.available {
+      border-color: rgba(255,201,94,0.35);
+    }
+
+    .quest-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(123,227,154,0.12);
+      color: var(--uncommon);
+      font-size: 0.8rem;
+    }
+
+    .question-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,201,94,0.18);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .action-points {
+      margin: 10px 0;
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .craft-section-title {
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 980px) {
+      .grid, .game-layout { grid-template-columns: 1fr; }
+      .enemy-grid, .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 620px) {
+      .ability-row, .enemy-grid, .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section id="startScreen">
+      <div class="card hero">
+        <h1>The Nerdverse: Aetherfall Vortex</h1>
+        <h2>Epic Legendary Campaign</h2>
+        <p class="muted">
+          A single-file RPG adventure set in Aetherfall: a world born from Lumina and Umbros, scarred by the Sundering Wars,
+          and now sliding toward the Shadow War. You begin at a game-night frame, but the world quickly expands into
+          kingdoms, cults, arenas, haunted ruins, living forests, legendary artifacts, and a final choice that can save the world or corrupt it forever.
+        </p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Create Your Character</h3>
+
+          <label for="playerName">Your Name</label>
+          <input id="playerName" type="text" placeholder="Hero of Aetherfall..." />
+
+          <label for="classSelect">Choose Your Class</label>
+          <select id="classSelect">
+            <option value="">Choose a class...</option>
+            <option>Barbarian</option>
+            <option>Bard</option>
+            <option>Cleric</option>
+            <option>Druid</option>
+            <option>Fighter</option>
+            <option>Monk</option>
+            <option>Paladin</option>
+            <option>Ranger</option>
+            <option>Rogue</option>
+            <option>Sorcerer</option>
+            <option>Warlock</option>
+            <option>Wizard</option>
+          </select>
+
+          <p id="startMessage" class="muted">Pick a class to open the ability popup.</p>
+
+          <div class="btns">
+            <button id="openAllocatorBtn" class="alt" type="button" disabled>Open Ability Popup</button>
+            <button id="startBtn" type="button" disabled>Start Adventure</button>
+            <button id="loadFromStartBtn" class="dim" type="button">Load Save</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Character Rules</h3>
+          <p>You select one of the 12 D&amp;D classes, then distribute exactly <strong>16 points</strong> across Strength, Dexterity, Constitution, Intelligence, Wisdom, and Charisma.</p>
+          <p class="muted">Base score is 10. Class bonuses apply on top. These affect quests, combat, loot, crafting, branching choices, and major endings.</p>
+          <div class="tag">Mini Map</div>
+          <div class="tag">Question Events</div>
+          <div class="tag">2 Actions Per Turn</div>
+          <div class="tag">Special Abilities</div>
+          <div class="tag">Item Combining</div>
+          <div class="tag">Hidden Secrets</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="hidden">
+      <div class="utility" style="margin-bottom: 14px;">
+        <button id="saveBtn" type="button">Save</button>
+        <button id="loadBtn" class="alt" type="button">Load</button>
+        <button id="inventoryBtn" class="dim" type="button">Inventory</button>
+        <button id="craftBtn" class="alt" type="button">Craft / Combine</button>
+      </div>
+
+      <div class="game-layout">
+        <main class="card story-box">
+          <div class="meta">
+            <div id="locationLabel">Location: Valencrest</div>
+            <div id="chapterLabel">Chapter: The Fallen Star</div>
+          </div>
+          <div id="storyText" class="story-text"></div>
+          <div id="combatArea" class="combat-box hidden"></div>
+          <div id="options" class="options" style="margin-top:18px;"></div>
+        </main>
+
+        <aside class="sidebar">
+          <div class="card">
+            <h3>Status</h3>
+            <div class="stats-grid">
+              <div class="stat"><strong>Name</strong><span id="statName">-</span></div>
+              <div class="stat"><strong>Class</strong><span id="statClass">-</span></div>
+              <div class="stat"><strong>HP</strong><span id="statHp">30/30</span></div>
+              <div class="stat"><strong>Nerd Cred</strong><span id="statCred">0</span></div>
+              <div class="stat"><strong>Gold</strong><span id="statGold">0</span></div>
+              <div class="stat"><strong>Rules Approval</strong><span id="statApproval">0</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Dice Tray</h3>
+            <div id="diceLog" class="log">The dice wait in dramatic silence.</div>
+          </div>
+
+          <div class="card">
+            <h3>Quest Log</h3>
+            <div id="questLog" class="small-list"></div>
+          </div>
+
+          <div class="card">
+            <h3>Mini Map</h3>
+            <div id="miniMap" class="mini-map"></div>
+          </div>
+
+          <div class="card">
+            <h3>Abilities</h3>
+            <div id="abilityList" class="small-list"></div>
+          </div>
+
+          <div class="card">
+            <h3>Inventory</h3>
+            <div id="inventoryPreview" class="small-list"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <div id="allocatorModal" class="modal">
+    <div class="modal-card">
+      <div class="utility" style="justify-content:space-between; align-items:center;">
+        <h3 style="margin-bottom:0;">Ability Allocation</h3>
+        <button id="closeAllocatorBtn" class="dim" type="button">Close</button>
+      </div>
+      <p class="muted">Allocate exactly <strong>16 points</strong>. Base score is 10. Effective score = base 10 + allocated points + class bonus. Effective score cannot exceed 60.</p>
+      <div id="abilityRows"></div>
+      <p id="allocatorSummary" class="muted">Points remaining: 16</p>
+      <div class="btns">
+        <button id="confirmAllocatorBtn" type="button" disabled>Confirm Allocation</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="inventoryModal" class="modal">
+    <div class="modal-card">
+      <div class="utility" style="justify-content:space-between; align-items:center;">
+        <h3 style="margin-bottom:0;">Inventory</h3>
+        <button type="button" class="dim" onclick="closeModal('inventoryModal')">Close</button>
+      </div>
+      <div id="inventoryModalContent" class="small-list"></div>
+    </div>
+  </div>
+
+  <div id="craftModal" class="modal">
+    <div class="modal-card">
+      <div class="utility" style="justify-content:space-between; align-items:center;">
+        <h3 style="margin-bottom:0;">Crafting & Combining</h3>
+        <button type="button" class="dim" onclick="closeModal('craftModal')">Close</button>
+      </div>
+      <p class="muted">Safe crafting locations: Valencrest, Aetherfall Crossroads, Molgrath, Lythien, Celebrity Green Room.</p>
+      <div id="craftContent" class="small-list"></div>
+    </div>
+  </div>
+
+  <script>
+    const worldbook = {
+      title: "Aetherfall",
+      subtitle: "Expanded Edition - Volume I",
+      creationMyth: {
+        void: "In the beginning, there was only the endless Void.",
+        forces: [
+          { name: "Lumina", domain: "creation and light" },
+          { name: "Umbros", domain: "destruction and shadow" }
+        ],
+        summary: "Their clash birthed the stars, time, and eventually Aetherfall itself. Fragments of their power formed the first gods."
+      },
+      firstGods: [
+        { name: "Solaryn", domains: ["Sun", "Order", "Justice"] },
+        { name: "Nyxara", domains: ["Night", "Secrets", "Dreams"] },
+        { name: "Thalos", domains: ["Storms", "Chaos", "War"] },
+        { name: "Eryndra", domains: ["Life", "Nature", "Growth"] },
+        { name: "Vorkath", domains: ["Death", "Decay", "Balance"] }
+      ],
+      ancientConflict: "The Sundering Wars",
+      campaign: {
+        name: "The Shadow War",
+        acts: [
+          "Act 1: Discovery of Umbros cult",
+          "Act 2: War across continents",
+          "Act 3: Final battle against Shadow Lord"
+        ]
+      }
+    };
+
+    const classBonuses = {
+      Barbarian: { str: 2, dex: 0, con: 2, int: 0, wis: 0, cha: 0 },
+      Bard:      { str: 0, dex: 1, con: 0, int: 0, wis: 0, cha: 2 },
+      Cleric:    { str: 0, dex: 0, con: 1, int: 0, wis: 2, cha: 0 },
+      Druid:     { str: 0, dex: 0, con: 1, int: 0, wis: 2, cha: 0 },
+      Fighter:   { str: 2, dex: 1, con: 1, int: 0, wis: 0, cha: 0 },
+      Monk:      { str: 0, dex: 2, con: 0, int: 0, wis: 2, cha: 0 },
+      Paladin:   { str: 2, dex: 0, con: 1, int: 0, wis: 0, cha: 1 },
+      Ranger:    { str: 0, dex: 2, con: 0, int: 0, wis: 1, cha: 0 },
+      Rogue:     { str: 0, dex: 2, con: 0, int: 1, wis: 0, cha: 1 },
+      Sorcerer:  { str: 0, dex: 0, con: 1, int: 0, wis: 0, cha: 2 },
+      Warlock:   { str: 0, dex: 0, con: 1, int: 1, wis: 0, cha: 2 },
+      Wizard:    { str: 0, dex: 0, con: 0, int: 2, wis: 1, cha: 0 }
+    };
+
+    const abilityLabels = {
+      str: "Strength",
+      dex: "Dexterity",
+      con: "Constitution",
+      int: "Intelligence",
+      wis: "Wisdom",
+      cha: "Charisma"
+    };
+
+    const abilityAlloc = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 };
+
+    const recipes = [
+      {
+        result: "Greater Healing Potion",
+        ingredients: ["Potion of Healing", "Rare Herb"],
+        ability: "int",
+        dc: 12,
+        text: "You upgrade a decent potion into the sort of second chance fantasy stories hand out before trouble."
+      },
+      {
+        result: "Legendary Roll Token",
+        ingredients: ["Mint Condition Comic", "Lucky d20"],
+        ability: "cha",
+        dc: 13,
+        text: "Collector obsession plus dice superstition equals destiny with paperwork."
+      },
+      {
+        result: "Love Spell Scroll",
+        ingredients: ["Rare Herb", "Soft Kitty Charm"],
+        ability: "wis",
+        dc: 14,
+        text: "Emotionally irresponsible magic becomes plot-relevant in record time."
+      },
+      {
+        result: "Stormbreaker Axe",
+        ingredients: ["Tiny Rage Elixir", "Inventor's Toolkit", "Rule Binder"],
+        ability: "str",
+        dc: 16,
+        text: "A reforged relic that turns momentum into thunder."
+      },
+      {
+        result: "Shadow Cloak",
+        ingredients: ["Soft Kitty Charm", "Dice Grease", "Mint Condition Comic"],
+        ability: "dex",
+        dc: 15,
+        text: "A cloak stitched from luck, silence, and suspicious confidence."
+      },
+      {
+        result: "Dragonbone Armor",
+        ingredients: ["Shield Potion", "Inventor's Toolkit", "Greater Healing Potion"],
+        ability: "con",
+        dc: 17,
+        text: "Mythic armor built to survive things that should not be survivable."
+      }
+    ];
+
+    const combineRecipes = [
+      { a: "Lucky d20", b: "Potion of Healing", result: "Legendary Roll Token", text: "Combine luck and recovery into a stronger heroic spike." },
+      { a: "Rare Herb", b: "Soft Kitty Charm", result: "Love Spell Scroll", text: "A reckless enchantment with very sincere consequences." },
+      { a: "Inventor's Toolkit", b: "Tiny Rage Elixir", result: "Stormbreaker Axe", text: "Engineering meets extremely poor anger management." }
+    ];
+
+    const enemies = {
+      hallwayGoblin: { name: "Dice-Eating Hallway Goblin", hp: 15, ac: 12, attack: 3, dmg: 6, special: "Steals a snack-sized item on a strong hit." },
+      comicEnforcer: { name: "Ashkar Arena Champion", hp: 22, ac: 14, attack: 5, dmg: 8, special: "Relentless duelist pressure." },
+      basilisk: { name: "Nebula Basilisk", hp: 28, ac: 15, attack: 6, dmg: 10, special: "Critical hits reduce your max HP by 2." },
+      shadowSheldon: { name: "The Hollow King", hp: 34, ac: 16, attack: 7, dmg: 10, special: "Fear aura and shadow surge." },
+      vortexDragon: { name: "Umbros Avatar", hp: 52, ac: 17, attack: 8, dmg: 12, special: "Shadow surge every third round for unavoidable damage." },
+      emberAlpha: { name: "Ember Wolf Alpha", hp: 26, ac: 14, attack: 6, dmg: 9, special: "Pack fury causes its first attack each round to hit harder." },
+      cultKnight: { name: "Veil Knight", hp: 30, ac: 15, attack: 6, dmg: 9, special: "Shadow armor gives resistance to sloppy attacks." },
+      ironRevenant: { name: "Iron Revenant", hp: 33, ac: 16, attack: 7, dmg: 9, special: "Forged hatred makes defending less effective." },
+      maskAssassin: { name: "Masquerade Assassin", hp: 32, ac: 16, attack: 7, dmg: 10, special: "Suspicion meter becomes steel very quickly." }
+    };
+
+    const rareDrops = [
+      { name: "Shield Potion", chance: 0.01 },
+      { name: "Potion of Healing", chance: 0.18 },
+      { name: "Greater Healing Potion", chance: 0.08 },
+      { name: "Rare Herb", chance: 0.14 },
+      { name: "Lucky d20", chance: 0.08 },
+      { name: "Mint Condition Comic", chance: 0.05 },
+      { name: "Soft Kitty Charm", chance: 0.04 },
+      { name: "Whiteboard Marker of Insight", chance: 0.06 },
+      { name: "Rule Binder", chance: 0.05 },
+      { name: "Energy Drink of Hyperfocus", chance: 0.07 },
+      { name: "Laser Pointer of Precision", chance: 0.06 },
+      { name: "Inventor's Toolkit", chance: 0.05 },
+      { name: "Lucky Star Scarf", chance: 0.05 },
+      { name: "Cheesecake Comfort Token", chance: 0.06 },
+      { name: "Neurobiology Notes", chance: 0.05 },
+      { name: "Tiny Rage Elixir", chance: 0.04 },
+      { name: "Signed Captain Photo", chance: 0.03 },
+      { name: "Smirk Badge", chance: 0.03 },
+      { name: "Dice Grease", chance: 0.07 },
+      { name: "Bazinga Bomb", chance: 0.04 }
+    ];
+
+    const itemEffects = {
+      "Shield Potion": { description: "Legendary 1% drop. In combat, grants a powerful shielded defend state.", use: "combat", rarity: "legendary" },
+      "Potion of Healing": { description: "Recover 8 HP.", use: "heal8", rarity: "common" },
+      "Greater Healing Potion": { description: "Recover 14 HP.", use: "heal14", rarity: "rare" },
+      "Rare Herb": { description: "Crafting ingredient for stronger items.", use: "none", rarity: "common" },
+      "Lucky d20": { description: "Your next attack has advantage.", use: "advantage", rarity: "rare" },
+      "Mint Condition Comic": { description: "Collector relic. Helps crafting and city intrigue routes.", use: "none", rarity: "rare" },
+      "Soft Kitty Charm": { description: "+1 bonus to Charisma checks while in inventory.", use: "passiveCha", rarity: "uncommon" },
+      "Whiteboard Marker of Insight": { description: "+1 bonus to Intelligence checks while in inventory.", use: "passiveInt", rarity: "uncommon" },
+      "Rule Binder": { description: "+1 bonus to Intelligence checks and rules-heavy scenes.", use: "passiveInt", rarity: "rare" },
+      "Energy Drink of Hyperfocus": { description: "Your next skill action gets +2.", use: "focus", rarity: "uncommon" },
+      "Laser Pointer of Precision": { description: "Deals 6 direct damage in combat.", use: "damage6", rarity: "uncommon" },
+      "Inventor's Toolkit": { description: "Reduce enemy AC by 2 for the rest of combat.", use: "debuffAc", rarity: "rare" },
+      "Lucky Star Scarf": { description: "+1 bonus to Charisma checks while in inventory.", use: "passiveCha", rarity: "uncommon" },
+      "Cheesecake Comfort Token": { description: "Recover 5 HP and gain 1 Nerd Cred.", use: "heal5cred", rarity: "uncommon" },
+      "Neurobiology Notes": { description: "+2 bonus to your next Intelligence check.", use: "brainBoost", rarity: "rare" },
+      "Tiny Rage Elixir": { description: "Your next attack deals +4 damage.", use: "rage", rarity: "rare" },
+      "Signed Captain Photo": { description: "Gain +2 Nerd Cred instantly.", use: "cred2", rarity: "epic" },
+      "Smirk Badge": { description: "Enemy's next attack has disadvantage.", use: "enemyDisadvantage", rarity: "epic" },
+      "Dice Grease": { description: "Your next flee attempt or agility move has advantage.", use: "grease", rarity: "uncommon" },
+      "Bazinga Bomb": { description: "Deal 10 direct damage in combat.", use: "damage10", rarity: "epic" },
+      "Legendary Roll Token": { description: "Crafted token. Your next attack has advantage and grants +1 Nerd Cred when used.", use: "legendaryRoll", rarity: "legendary" },
+      "Love Spell Scroll": { description: "Crafted scroll. Restores 6 HP and grants 3 Nerd Cred from pure chaos.", use: "loveScroll", rarity: "epic" },
+      "Blade of Lumina": { description: "Legendary relic of order and light.", use: "passiveCha", rarity: "legendary" },
+      "Crown of Umbros": { description: "Mythic relic of shadow and corruption.", use: "none", rarity: "mythic" },
+      "Stormbreaker Axe": { description: "+1 Strength bonus while carried. Legendary reforged war axe of storm might.", use: "passiveStr", rarity: "legendary" },
+      "Shadow Cloak": { description: "+1 Dexterity bonus while carried and your first flee each fight is easier.", use: "passiveDex", rarity: "legendary" },
+      "Dragonbone Armor": { description: "+1 Constitution bonus while carried.", use: "passiveCon", rarity: "mythic" }
+    };
+
+    const mapGraph = {
+      "Valencrest": ["Eldoria Outskirts", "Ashkar", "Sylvaris"],
+      "Eldoria Outskirts": ["Valencrest", "Whispering Depths"],
+      "Ashkar": ["Valencrest", "Molgrath"],
+      "Molgrath": ["Ashkar", "Umbros Rift"],
+      "Sylvaris": ["Valencrest", "Lythien", "Whispering Depths"],
+      "Lythien": ["Sylvaris", "Umbros Rift"],
+      "Whispering Depths": ["Eldoria Outskirts", "Sylvaris", "Umbros Rift"],
+      "Umbros Rift": ["Molgrath", "Lythien", "Valencrest"],
+      "Aetherfall Crossroads": ["Valencrest", "Ashkar", "Sylvaris", "Molgrath", "Whispering Depths"]
+    };
+
+    const unlockableAbilities = {
+      Barbarian: [{ name: "Overpower", desc: "Deal 6 direct damage once each fight.", use: "overpower" }],
+      Rogue: [{ name: "Shadowstep", desc: "Gain advantage and dodge the next hit more easily.", use: "shadowstep" }],
+      Wizard: [{ name: "Leystream Burst", desc: "Deal 8 magic damage.", use: "burst" }],
+      Cleric: [{ name: "Radiant Ward", desc: "Heal 6 and defend.", use: "ward" }],
+      Fighter: [{ name: "Second Wind", desc: "Recover 7 HP.", use: "secondwind" }],
+      Paladin: [{ name: "Radiant Ward", desc: "Heal 6 and defend.", use: "ward" }],
+      default: [{ name: "Focus Surge", desc: "Gain +3 to your next attack and next skill.", use: "focussurge" }]
+    };
+
+    const questionEvents = [
+      {
+        id: "cult-riddle",
+        location: "Valencrest",
+        question: "A hooded whisper asks: 'What was born when Lumina and Umbros clashed?'",
+        answers: [
+          { label: "The stars and time", correct: true, reward: () => { game.nerdCred += 2; game.gold += 10; } },
+          { label: "Only the gods", correct: false, penalty: () => { game.hp = Math.max(1, game.hp - 2); } },
+          { label: "Sylvaris alone", correct: false, penalty: () => { game.gold = Math.max(0, game.gold - 5); } }
+        ]
+      },
+      {
+        id: "forest-test",
+        location: "Sylvaris",
+        question: "A druid asks: 'What restores the forest better than fire?'",
+        answers: [
+          { label: "Balance and flow", correct: true, reward: () => { game.inventory.push("Rare Herb"); } },
+          { label: "Fear", correct: false, penalty: () => { game.hp = Math.max(1, game.hp - 3); } },
+          { label: "Gold", correct: false, penalty: () => { game.nerdCred = Math.max(0, game.nerdCred - 1); } }
+        ]
+      },
+      {
+        id: "forge-lore",
+        location: "Molgrath",
+        question: "A smith growls: 'What does Drakmor respect most?'",
+        answers: [
+          { label: "Survival and strength", correct: true, reward: () => { game.inventory.push("Inventor's Toolkit"); } },
+          { label: "Etiquette", correct: false, penalty: () => { game.gold = Math.max(0, game.gold - 10); } },
+          { label: "Mercy first", correct: false, penalty: () => { game.hp = Math.max(1, game.hp - 2); } }
+        ]
+      },
+      {
+        id: "depths-secret",
+        location: "Whispering Depths",
+        question: "A whisper tests you: 'What do the dead bargain for?'",
+        answers: [
+          { label: "More time", correct: true, reward: () => { game.secretFlags.foundShadowTruth = true; game.nerdCred += 1; } },
+          { label: "Better weather", correct: false, penalty: () => { game.hp = Math.max(1, game.hp - 2); } },
+          { label: "Nothing", correct: false, penalty: () => { game.gold = Math.max(0, game.gold - 8); } }
+        ]
+      }
+    ];
+
+    let game = null;
+    let combat = null;
+
+    function createBaseState(name, klass, abilities) {
+      return {
+        name,
+        klass,
+        abilities,
+        hp: 30,
+        maxHp: 30,
+        nerdCred: 0,
+        gold: 25,
+        inventory: ["Potion of Healing", "Lucky d20", "Rare Herb"],
+        currentScene: "intro",
+        location: "Valencrest",
+        chapter: "Chapter I: The Fallen Star",
+        quests: {
+          main: worldbook.campaign.name,
+          fallenStar: "Investigate the glowing crater and stop the corruption.",
+          bloodMarket: "Identify the killer in Valencrest market.",
+          arenaChampion: "Travel to Ashkar and face the arena path.",
+          rootsOfCorruption: "Cleanse Sylvaris or burn the corruption out.",
+          whisperingDepths: "Explore the haunted mine and silence the whispers.",
+          nightOfMasks: "Unstarted",
+          stormbreaker: "Unstarted",
+          emberHunt: "Unstarted"
+        },
+        flags: {
+          rulesApproved: false,
+          lowHpPenalty: false
+        },
+        secretFlags: {
+          joinedCult: false,
+          savedVillage: false,
+          solvedMarket: false,
+          cleansedForest: false,
+          foundShadowTruth: false,
+          tamedEmberWolf: false,
+          forgedStormbreaker: false
+        },
+        completedQuests: 0,
+        questionIdsSeen: [],
+        unlockedAbilities: [],
+        tempFocusBonus: 0,
+        tempBrainBonus: 0,
+        tempDamageBonus: 0,
+        tempGrease: false,
+        tempAttackBonus: 0,
+        tempSkillBonus: 0,
+        tempDodge: 0
+      };
+    }
+
+    function rarityClass(itemName) {
+      const rarity = itemEffects[itemName]?.rarity || "common";
+      return `rarity-${rarity}`;
+    }
+
+    function getPassiveBonus(ability) {
+      if (!game) return 0;
+      let bonus = 0;
+
+      if (ability === "cha") {
+        if (game.inventory.includes("Soft Kitty Charm")) bonus += 1;
+        if (game.inventory.includes("Lucky Star Scarf")) bonus += 1;
+        if (game.inventory.includes("Blade of Lumina")) bonus += 1;
+      }
+      if (ability === "int") {
+        if (game.inventory.includes("Whiteboard Marker of Insight")) bonus += 1;
+        if (game.inventory.includes("Rule Binder")) bonus += 1;
+      }
+      if (ability === "dex") {
+        if (game.inventory.includes("Shadow Cloak")) bonus += 1;
+      }
+      if (ability === "con") {
+        if (game.inventory.includes("Dragonbone Armor")) bonus += 1;
+      }
+      if (ability === "str") {
+        if (game.inventory.includes("Stormbreaker Axe")) bonus += 1;
+      }
+
+      return bonus;
+    }
+
+    function abilityBonus(key) {
+      if (!game) return 0;
+      return Math.floor((game.abilities[key] - 10) / 2) + getPassiveBonus(key);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("show");
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add("show");
+    }
+
+    function totalAllocated() {
+      return Object.values(abilityAlloc).reduce((a, b) => a + b, 0);
+    }
+
+    function updateStartAvailability() {
+      const klass = document.getElementById("classSelect").value;
+      const remaining = 16 - totalAllocated();
+      const name = document.getElementById("playerName").value.trim();
+      const ready = !!klass && remaining === 0;
+      document.getElementById("openAllocatorBtn").disabled = !klass;
+      document.getElementById("startBtn").disabled = !ready;
+      document.getElementById("startMessage").textContent = !klass
+        ? "Pick a class to open the ability popup."
+        : remaining !== 0
+          ? `Open the popup and allocate exactly ${remaining} more point${remaining === 1 ? "" : "s"}.`
+          : `${name || "Your hero"} is ready. Click Start Adventure.`;
+    }
+
+    function renderAllocator() {
+      const klass = document.getElementById("classSelect").value;
+      const bonus = classBonuses[klass] || { str:0, dex:0, con:0, int:0, wis:0, cha:0 };
+      const wrap = document.getElementById("abilityRows");
+      wrap.innerHTML = "";
+
+      Object.keys(abilityLabels).forEach(key => {
+        const effective = Math.min(60, 10 + abilityAlloc[key] + bonus[key]);
+        const row = document.createElement("div");
+        row.className = "ability-row";
+        row.innerHTML = `
+          <div>
+            <strong>${abilityLabels[key]}</strong><br />
+            <span class="muted">Base 10 + allocated + class bonus = <strong>${effective}</strong></span>
+          </div>
+          <div>Allocated: <span id="alloc-${key}">${abilityAlloc[key]}</span></div>
+          <div>Class bonus: +${bonus[key]}</div>
+          <div class="utility">
+            <button class="tiny dim" type="button" onclick="adjustAbility('${key}', -1)">-</button>
+            <button class="tiny" type="button" onclick="adjustAbility('${key}', 1)">+</button>
+          </div>
+        `;
+        wrap.appendChild(row);
+      });
+
+      const remaining = 16 - totalAllocated();
+      document.getElementById("allocatorSummary").textContent = `Points remaining: ${remaining}`;
+      document.getElementById("confirmAllocatorBtn").disabled = remaining !== 0;
+    }
+
+    function adjustAbility(key, delta) {
+      if (delta > 0 && totalAllocated() >= 16) return;
+      if (delta < 0 && abilityAlloc[key] <= 0) return;
+
+      const klass = document.getElementById("classSelect").value;
+      const bonus = classBonuses[klass] || { str:0, dex:0, con:0, int:0, wis:0, cha:0 };
+      const effectiveAfter = 10 + abilityAlloc[key] + delta + bonus[key];
+      if (effectiveAfter > 60) return;
+
+      abilityAlloc[key] += delta;
+      renderAllocator();
+      updateStartAvailability();
+    }
+
+    function rollD20(bonus = 0, mode = "normal") {
+      const a = Math.floor(Math.random() * 20) + 1;
+      const b = Math.floor(Math.random() * 20) + 1;
+      let chosen = a;
+      if (mode === "advantage") chosen = Math.max(a, b);
+      if (mode === "disadvantage") chosen = Math.min(a, b);
+      const total = chosen + bonus;
+
+      let text = `Rolls: ${a}`;
+      if (mode !== "normal") text += ` and ${b} (${mode})`;
+      text += `. Chosen die: ${chosen}. Bonus: ${bonus >= 0 ? "+" : ""}${bonus}. Total: ${total}.`;
+
+      if (chosen === 20) text += " Natural 20! Critical Success!";
+      if (chosen === 1) text += " Natural 1... disaster energy.";
+
+      return { die: chosen, total, text };
+    }
+
+    function setDice(text) {
+      document.getElementById("diceLog").innerHTML = text;
+    }
+
+    function makeSkillCheck(ability, dc, mode = "normal") {
+      let bonus = abilityBonus(ability);
+
+      if (ability === "int" && game.tempBrainBonus) {
+        bonus += game.tempBrainBonus;
+        game.tempBrainBonus = 0;
+      }
+
+      if (game.tempFocusBonus) {
+        bonus += game.tempFocusBonus;
+        game.tempFocusBonus = 0;
+      }
+
+      if (game.tempSkillBonus) {
+        bonus += game.tempSkillBonus;
+        game.tempSkillBonus = 0;
+      }
+
+      const roll = rollD20(bonus, mode);
+      const success = roll.die === 20 || (roll.die !== 1 && roll.total >= dc);
+      setDice(`${roll.text}<br><br>${success ? "Success." : "Failure."}`);
+      return success;
+    }
+
+    function renderMiniMap() {
+      const current = game.location;
+      const nearby = mapGraph[current] || [];
+      const known = [current, ...nearby];
+      document.getElementById("miniMap").innerHTML = known.map(loc => `
+        <div class="map-node ${loc === current ? "current" : "available"}">
+          <strong>${loc}</strong><br>
+          <span class="muted">${loc === current ? "You are here" : "Reachable destination"}</span>
+        </div>
+      `).join("");
+    }
+
+    function unlockProgressAbilities() {
+      const pool = unlockableAbilities[game.klass] || unlockableAbilities.default;
+      const fallback = { name: "Aether Surge", desc: "Gain +3 to next attack and next skill.", use: "focussurge" };
+
+      if (game.completedQuests >= 2 && game.unlockedAbilities.length === 0) {
+        game.unlockedAbilities.push(pool[0]);
+      }
+      if (game.completedQuests >= 4 && !game.unlockedAbilities.find(a => a.name === "Aether Surge")) {
+        game.unlockedAbilities.push(fallback);
+      }
+    }
+
+    function renderAbilityList() {
+      unlockProgressAbilities();
+      document.getElementById("abilityList").innerHTML = game.unlockedAbilities.length
+        ? game.unlockedAbilities.map(a => `<div class="small-item"><strong>${a.name}</strong><br>${a.desc}</div>`).join("")
+        : `<div class="small-item">No special abilities unlocked yet.</div>`;
+    }
+
+    function updateUi() {
+      if (!game) return;
+      document.getElementById("statName").textContent = game.name;
+      document.getElementById("statClass").textContent = game.klass;
+      document.getElementById("statHp").textContent = `${game.hp}/${game.maxHp}`;
+      document.getElementById("statCred").textContent = game.nerdCred;
+      document.getElementById("statGold").textContent = game.gold;
+      document.getElementById("statApproval").textContent = game.flags.rulesApproved ? "4" : "0";
+      document.getElementById("locationLabel").textContent = `Location: ${game.location}`;
+      document.getElementById("chapterLabel").textContent = `Chapter: ${game.chapter}`;
+
+      document.getElementById("questLog").innerHTML = Object.entries(game.quests)
+        .map(([key, value]) => `<div class="small-item"><strong>${key}</strong><br>${value}</div>`)
+        .join("");
+
+      document.getElementById("inventoryPreview").innerHTML = game.inventory.length
+        ? game.inventory.slice(0, 8).map(item => `
+            <div class="small-item">
+              <strong class="${rarityClass(item)}">${item}</strong><br>
+              <span class="muted">${itemEffects[item] ? itemEffects[item].description : ""}</span>
+            </div>
+          `).join("")
+        : `<div class="small-item">Your inventory is empty, which is never comforting in fantasy.</div>`;
+
+      renderMiniMap();
+      renderAbilityList();
+    }
+
+    function applyLowHpPenalty() {
+      if (game.hp <= 8 && !game.flags.lowHpPenalty) {
+        game.flags.lowHpPenalty = true;
+        game.maxHp = Math.max(24, game.maxHp - 2);
+        game.hp = Math.min(game.hp, game.maxHp);
+        setDice(document.getElementById("diceLog").innerHTML + "<br><br>The campaign leaves a scar. Max HP drops by 2.");
+      }
+    }
+
+    function rollLootDrop() {
+      const found = [];
+      rareDrops.forEach(drop => {
+        if (Math.random() < drop.chance) found.push(drop.name);
+      });
+
+      if (found.length === 0) {
+        const fallback = ["Potion of Healing", "Rare Herb", "Lucky d20", "Dice Grease"];
+        found.push(fallback[Math.floor(Math.random() * fallback.length)]);
+      }
+
+      found.forEach(item => game.inventory.push(item));
+      return found;
+    }
+
+    function useInventoryItem(itemName) {
+      const item = itemEffects[itemName];
+      if (!item) return false;
+
+      const index = game.inventory.indexOf(itemName);
+      if (index === -1) return false;
+
+      if (item.use === "none" || item.use.startsWith("passive")) {
+        setDice(`${itemName} is a passive item. ${item.description}`);
+        return false;
+      }
+
+      game.inventory.splice(index, 1);
+
+      if (item.use === "heal8") {
+        game.hp = Math.min(game.maxHp, game.hp + 8);
+        setDice(`You use ${itemName} and recover 8 HP.`);
+      } else if (item.use === "heal14") {
+        game.hp = Math.min(game.maxHp, game.hp + 14);
+        setDice(`You use ${itemName} and recover 14 HP.`);
+      } else if (item.use === "heal5cred") {
+        game.hp = Math.min(game.maxHp, game.hp + 5);
+        game.nerdCred += 1;
+        setDice(`You use ${itemName}, recover 5 HP, and gain 1 Nerd Cred.`);
+      } else if (item.use === "cred2") {
+        game.nerdCred += 2;
+        setDice(`You use ${itemName}. Nerd Cred +2.`);
+      } else if (item.use === "advantage") {
+        if (combat) combat.nextAttackMode = "advantage";
+        setDice(`You use ${itemName}. Your next attack has advantage.`);
+      } else if (item.use === "focus") {
+        game.tempFocusBonus = 2;
+        setDice(`You use ${itemName}. Your next skill action gets +2.`);
+      } else if (item.use === "brainBoost") {
+        game.tempBrainBonus = 2;
+        setDice(`You study ${itemName}. Your next Intelligence check gets +2.`);
+      } else if (item.use === "rage") {
+        game.tempDamageBonus = 4;
+        setDice(`You drink ${itemName}. Your next attack deals +4 damage.`);
+      } else if (item.use === "damage6") {
+        if (combat) combat.enemyHp -= 6;
+        setDice(`You use ${itemName}. It deals 6 direct damage.`);
+      } else if (item.use === "damage10") {
+        if (combat) combat.enemyHp -= 10;
+        setDice(`You use ${itemName}. 10 direct damage.`);
+      } else if (item.use === "debuffAc") {
+        if (combat) combat.enemy.ac = Math.max(8, combat.enemy.ac - 2);
+        setDice(`You use ${itemName}. Enemy AC drops by 2 for the rest of combat.`);
+      } else if (item.use === "enemyDisadvantage") {
+        if (combat) combat.enemyNextAttackMode = "disadvantage";
+        setDice(`You use ${itemName}. The enemy's next attack has disadvantage.`);
+      } else if (item.use === "grease") {
+        game.tempGrease = true;
+        setDice(`You use ${itemName}. Your next flee or agility move has advantage.`);
+      } else if (item.use === "combat") {
+        if (combat) combat.defend = true;
+        setDice(`You use ${itemName}. A powerful shield surrounds you.`);
+      } else if (item.use === "legendaryRoll") {
+        if (combat) combat.nextAttackMode = "advantage";
+        game.nerdCred += 1;
+        setDice(`You use ${itemName}. Next attack has advantage. Nerd Cred +1.`);
+      } else if (item.use === "loveScroll") {
+        game.nerdCred += 3;
+        game.hp = Math.min(game.maxHp, game.hp + 6);
+        setDice(`You unleash ${itemName}. Chaos restores 6 HP and grants 3 Nerd Cred.`);
+      }
+
+      updateUi();
+      return true;
+    }
+
+    function maybeShowQuestionEvent() {
+      const event = questionEvents.find(e => e.location === game.location && !game.questionIdsSeen.includes(e.id));
+      if (!event) return "";
+      game.questionIdsSeen.push(event.id);
+      return `
+        <div class="question-box">
+          <strong>Question Event</strong>
+          <p>${event.question}</p>
+          ${event.answers.map((a, i) => `<button type="button" onclick="answerQuestionEvent('${event.id}', ${i})">${a.label}</button>`).join(" ")}
+        </div>
+      `;
+    }
+
+    function answerQuestionEvent(id, index) {
+      const event = questionEvents.find(e => e.id === id);
+      if (!event) return;
+      const answer = event.answers[index];
+      if (answer.correct) {
+        answer.reward?.();
+        setDice("Correct. You read the world well and gain a reward.");
+      } else {
+        answer.penalty?.();
+        setDice("Wrong. The world does not always forgive guessing.");
+      }
+      updateUi();
+      showScene(game.currentScene);
+    }
+
+    function showScene(id) {
+      const scene = scenes[id];
+      if (!scene) return;
+      game.currentScene = id;
+      if (typeof scene.enter === "function") scene.enter();
+      updateUi();
+
+      const baseText = typeof scene.text === "function" ? scene.text() : scene.text;
+      document.getElementById("storyText").innerHTML = baseText + maybeShowQuestionEvent();
+      document.getElementById("combatArea").classList.add("hidden");
+
+      const options = document.getElementById("options");
+      options.innerHTML = "";
+
+      (scene.options || []).filter(option => !option.when || option.when()).forEach(option => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = option.alt ? "alt" : option.dim ? "dim" : "";
+        btn.textContent = option.label;
+        btn.onclick = () => chooseOption(option);
+        options.appendChild(btn);
+      });
+
+      if (!options.innerHTML.trim()) {
+        options.innerHTML = `<button type="button" onclick="showScene('endingMixed')">Continue</button>`;
+      }
+
+      autoSave();
+    }
+
+    function chooseOption(option) {
+      if (option.effect) option.effect();
+
+      if (option.check) {
+        const mode = typeof option.check.mode === "function" ? option.check.mode() : (option.check.mode || "normal");
+        const ok = makeSkillCheck(option.check.ability, option.check.dc, mode);
+        showScene(ok ? option.success : option.failure);
+        return;
+      }
+
+      if (option.combat) {
+        startCombat(option.combat, option.win, option.lose);
+        return;
+      }
+
+      if (option.goto) {
+        showScene(option.goto);
+      }
+    }
+
+    function startCombat(enemyKey, winScene, loseScene) {
+      const enemy = JSON.parse(JSON.stringify(enemies[enemyKey]));
+      combat = {
+        enemyKey,
+        enemy,
+        enemyHp: enemy.hp,
+        round: 1,
+        defend: false,
+        nextAttackMode: enemyKey === "loveHomunculus" ? "disadvantage" : "normal",
+        enemyNextAttackMode: "normal",
+        actionPoints: 2,
+        usedAbilities: [],
+        winScene,
+        loseScene
+      };
+      renderCombat();
+      setDice(`Combat begins against ${enemy.name}. ${enemy.special}`);
+    }
+
+    function renderCombat() {
+      const area = document.getElementById("combatArea");
+      area.classList.remove("hidden");
+      const e = combat.enemy;
+
+      area.innerHTML = `
+        <h3>${e.name}</h3>
+        <div class="enemy-grid">
+          <div class="small-item"><strong>Enemy HP</strong><br>${combat.enemyHp}/${e.hp}</div>
+          <div class="small-item"><strong>Enemy AC</strong><br>${e.ac}</div>
+          <div class="small-item"><strong>Round</strong><br>${combat.round}</div>
+          <div class="small-item"><strong>Special</strong><br>${e.special}</div>
+        </div>
+        <div class="action-points">Actions left: ${combat.actionPoints}</div>
+        <div class="combat-actions">
+          <button type="button" onclick="combatAction('attack')">Attack</button>
+          <button type="button" class="alt" onclick="combatAction('item')">Use Item</button>
+          <button type="button" class="dim" onclick="combatAction('defend')">Defend</button>
+          <button type="button" onclick="combatAction('skill')">Use Skill</button>
+          <button type="button" class="alt" onclick="combatAction('ability')">Special Ability</button>
+          <button type="button" class="dim" onclick="combatAction('flee')">Flee</button>
+        </div>
+      `;
+    }
+
+    function finishPlayerAction() {
+      if (combat && combat.enemyHp <= 0) {
+        game.nerdCred += combat.enemyKey === "vortexDragon" ? 8 : 3;
+        const loot = rollLootDrop();
+        game.hp = game.maxHp;
+        const nextScene = combat.winScene || "hubAetherfall";
+        setDice(`Victory. You fully heal to ${game.hp}/${game.maxHp}. Loot found: ${loot.join(", ")}.${loot.includes("Shield Potion") ? " Incredible. A Shield Potion dropped from the 1% table." : ""}`);
+        combat = null;
+        updateUi();
+        setTimeout(() => showScene(nextScene), 250);
+        return;
+      }
+
+      combat.actionPoints -= 1;
+      if (combat.actionPoints > 0) {
+        updateUi();
+        renderCombat();
+        return;
+      }
+
+      combat.actionPoints = 2;
+      enemyTurn();
+    }
+
+    function combatAction(kind) {
+      if (!combat || combat.actionPoints <= 0) return;
+      const e = combat.enemy;
+
+      if (kind === "attack") {
+        const bonus = abilityBonus("str") + abilityBonus("dex") + game.tempAttackBonus;
+        game.tempAttackBonus = 0;
+        const roll = rollD20(bonus, combat.nextAttackMode);
+        combat.nextAttackMode = "normal";
+
+        if (roll.die === 20 || (roll.die !== 1 && roll.total >= e.ac)) {
+          const dieSize = abilityBonus("str") >= 4 ? 10 : 8;
+          let dmg = Math.floor(Math.random() * dieSize) + 1;
+          if (game.tempDamageBonus) {
+            dmg += game.tempDamageBonus;
+            game.tempDamageBonus = 0;
+          }
+          combat.enemyHp -= dmg;
+          setDice(`${roll.text}<br><br>You hit for ${dmg} damage.`);
+        } else {
+          setDice(`${roll.text}<br><br>You miss.`);
+        }
+        finishPlayerAction();
+        return;
+      }
+
+      if (kind === "item") {
+        const usable = game.inventory.find(item => itemEffects[item] && itemEffects[item].use !== "none" && !itemEffects[item].use.startsWith("passive"));
+        if (!usable) {
+          setDice("You rummage through your inventory, but only passive or crafting items stare back at you.");
+        } else {
+          useInventoryItem(usable);
+        }
+        finishPlayerAction();
+        return;
+      }
+
+      if (kind === "defend") {
+        combat.defend = true;
+        setDice("You defend. Incoming attacks have a harder time landing.");
+        finishPlayerAction();
+        return;
+      }
+
+      if (kind === "skill") {
+        const roll = rollD20(abilityBonus("int") + (game.tempFocusBonus || 0) + game.tempSkillBonus, "normal");
+        game.tempFocusBonus = 0;
+        game.tempSkillBonus = 0;
+        const ok = roll.die === 20 || (roll.die !== 1 && roll.total >= 13);
+        setDice(`${roll.text}<br><br>${ok ? "You exploit a tactical weakness for 5 damage." : "Your plan arrives emotionally before it arrives strategically."}`);
+        if (ok) combat.enemyHp -= 5;
+        finishPlayerAction();
+        return;
+      }
+
+      if (kind === "ability") {
+        const ability = game.unlockedAbilities.find(a => !combat.usedAbilities.includes(a.name));
+        if (!ability) {
+          setDice("No special ability is ready.");
+        } else {
+          combat.usedAbilities.push(ability.name);
+          if (ability.use === "overpower") combat.enemyHp -= 6;
+          if (ability.use === "shadowstep") {
+            combat.nextAttackMode = "advantage";
+            game.tempDodge = 2;
+          }
+          if (ability.use === "burst") combat.enemyHp -= 8;
+          if (ability.use === "ward") {
+            game.hp = Math.min(game.maxHp, game.hp + 6);
+            combat.defend = true;
+          }
+          if (ability.use === "secondwind") {
+            game.hp = Math.min(game.maxHp, game.hp + 7);
+          }
+          if (ability.use === "focussurge") {
+            game.tempAttackBonus += 3;
+            game.tempSkillBonus += 3;
+          }
+          setDice(`You use ${ability.name}.`);
+        }
+        finishPlayerAction();
+        return;
+      }
+
+      if (kind === "flee") {
+        const mode = game.tempGrease || game.inventory.includes("Shadow Cloak") ? "advantage" : "normal";
+        game.tempGrease = false;
+        const ok = makeSkillCheck("dex", 14 + Math.max(0, combat.round - 1), mode);
+        if (ok) {
+          combat = null;
+          showScene("retreat");
+          return;
+        }
+        finishPlayerAction();
+      }
+    }
+
+    function enemyTurn() {
+      const e = combat.enemy;
+      const playerAc = 10 + abilityBonus("dex") + (combat.defend ? 2 : 0) + (game.tempDodge || 0);
+      game.tempDodge = 0;
+      const mode = combat.enemyNextAttackMode || "normal";
+      combat.enemyNextAttackMode = "normal";
+      const roll = rollD20(e.attack, mode);
+      let extra = "";
+
+      if (roll.die === 20 || (roll.die !== 1 && roll.total >= playerAc)) {
+        let dmg = Math.floor(Math.random() * e.dmg) + 1;
+
+        if (combat.enemyKey === "emberAlpha") dmg += 2;
+        if (combat.enemyKey === "basilisk" && roll.die === 20) {
+          game.maxHp = Math.max(22, game.maxHp - 2);
+          extra += " Max HP drops by 2.";
+        }
+        if (combat.enemyKey === "ironRevenant") {
+          extra += " Its impact crushes even careful stances.";
+        }
+
+        game.hp -= dmg;
+        setDice(`${roll.text}<br><br>${e.name} hits you for ${dmg} damage.${extra}`);
+      } else {
+        setDice(`${roll.text}<br><br>${e.name} misses.`);
+      }
+
+      if (combat.enemyKey === "vortexDragon" && combat.round % 3 === 0) {
+        game.hp -= 3;
+        setDice(document.getElementById("diceLog").innerHTML + "<br><br>Shadow surge tears across the room for 3 unavoidable damage.");
+      }
+
+      combat.defend = false;
+      combat.round += 1;
+
+      applyLowHpPenalty();
+      updateUi();
+
+      if (game.hp <= 0) {
+        const loseScene = combat.loseScene || "endingDefeat";
+        combat = null;
+        showScene(loseScene);
+        return;
+      }
+
+      renderCombat();
+    }
+
+    function safeCraftingLocation() {
+      return ["Valencrest", "Aetherfall Crossroads", "Molgrath", "Lythien", "Celebrity Green Room"].includes(game.location);
+    }
+
+    function combineItems(a, b) {
+      const pair = [a, b].sort().join("|");
+      const combos = {
+        "Lucky d20|Potion of Healing": "Legendary Roll Token",
+        "Rare Herb|Soft Kitty Charm": "Love Spell Scroll",
+        "Inventor's Toolkit|Tiny Rage Elixir": "Stormbreaker Axe"
+      };
+      const result = combos[pair];
+      if (!result) return false;
+      game.inventory.splice(game.inventory.indexOf(a), 1);
+      game.inventory.splice(game.inventory.indexOf(b), 1);
+      game.inventory.push(result);
+      game.nerdCred += 2;
+      updateUi();
+      openCrafting();
+      return result;
+    }
+
+    function openInventory() {
+      if (!game) return;
+      document.getElementById("inventoryModalContent").innerHTML = game.inventory.length
+        ? game.inventory.map(item => `
+            <div class="small-item">
+              <strong class="${rarityClass(item)}">${item}</strong><br>
+              <span class="muted">${itemEffects[item] ? itemEffects[item].description : "Mysterious loot."}</span>
+              ${itemEffects[item] && itemEffects[item].use !== "none" && !itemEffects[item].use.startsWith("passive")
+                ? `<br><button type="button" onclick="useInventoryItem('${item.replace(/'/g, "\\'")}'); openInventory();">Use</button>`
+                : ""}
+            </div>
+          `).join("")
+        : `<div class="small-item">Empty.</div>`;
+      openModal("inventoryModal");
+    }
+
+    function openCrafting() {
+      if (!game) return;
+      if (!safeCraftingLocation()) {
+        setDice("This is not a safe place to start potion chemistry or artifact tinkering.");
+        return;
+      }
+
+      const craftHtml = recipes.map((recipe, i) => {
+        const canCraft = recipe.ingredients.every(item => game.inventory.includes(item));
+        return `
+          <div class="small-item">
+            <strong class="${rarityClass(recipe.result)}">${recipe.result}</strong><br>
+            ${recipe.text}<br>
+            Ingredients: ${recipe.ingredients.join(", ")}<br>
+            Check: ${abilityLabels[recipe.ability]} DC ${recipe.dc}<br>
+            <button type="button" ${canCraft ? "" : "disabled"} onclick="craftItem(${i})">Craft</button>
+          </div>
+        `;
+      }).join("");
+
+      const combineHtml = combineRecipes.map(recipe => {
+        const canCombine = game.inventory.includes(recipe.a) && game.inventory.includes(recipe.b);
+        return `
+          <div class="small-item">
+            <strong class="${rarityClass(recipe.result)}">${recipe.result}</strong><br>
+            ${recipe.text}<br>
+            Combine: ${recipe.a} + ${recipe.b}<br>
+            <button type="button" ${canCombine ? "" : "disabled"} onclick="combineItems('${recipe.a}', '${recipe.b}')">Combine</button>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("craftContent").innerHTML = `
+        <div class="craft-section-title">Crafting Recipes</div>
+        ${craftHtml}
+        <div class="craft-section-title" style="margin-top:12px;">Item Combining</div>
+        ${combineHtml}
+      `;
+
+      openModal("craftModal");
+    }
+
+    function craftItem(index) {
+      const recipe = recipes[index];
+      if (!recipe.ingredients.every(item => game.inventory.includes(item))) return;
+
+      recipe.ingredients.forEach(item => {
+        game.inventory.splice(game.inventory.indexOf(item), 1);
+      });
+
+      if (makeSkillCheck(recipe.ability, recipe.dc)) {
+        game.inventory.push(recipe.result);
+        game.nerdCred += 2;
+        if (recipe.result === "Stormbreaker Axe") game.secretFlags.forgedStormbreaker = true;
+      }
+
+      updateUi();
+      openCrafting();
+    }
+
+    function saveGame() {
+      if (!game) return;
+      localStorage.setItem("nerdverseAetherfallSave", JSON.stringify(game));
+      setDice("Game saved.");
+    }
+
+    function loadGame() {
+      const raw = localStorage.getItem("nerdverseAetherfallSave");
+      if (!raw) {
+        alert("No save found.");
+        return;
+      }
+      game = JSON.parse(raw);
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("gameScreen").classList.remove("hidden");
+      updateUi();
+      showScene(game.currentScene);
+    }
+
+    function autoSave() {
+      if (game) localStorage.setItem("nerdverseAetherfallSave", JSON.stringify(game));
+    }
+
+    function startAdventure() {
+      const name = document.getElementById("playerName").value.trim() || "Guest Adventurer";
+      const klass = document.getElementById("classSelect").value;
+
+      if (!klass || totalAllocated() !== 16) {
+        alert("Pick a class and allocate exactly 16 points first.");
+        return;
+      }
+
+      const abilities = {};
+      Object.keys(abilityLabels).forEach(key => {
+        abilities[key] = Math.min(60, 10 + abilityAlloc[key] + classBonuses[klass][key]);
+      });
+
+      game = createBaseState(name, klass, abilities);
+      document.getElementById("startScreen").classList.add("hidden");
+      document.getElementById("gameScreen").classList.remove("hidden");
+      updateUi();
+      setDice("Character created. Aetherfall sharpens around you.");
+      showScene("intro");
+    }
+
+    const scenes = {
+      intro: {
+        enter() {
+          game.location = "Valencrest";
+          game.chapter = "Chapter I: The Fallen Star";
+        },
+        text() {
+          return `
+            <p>You arrive in <strong>Valencrest</strong>, capital of Eldoria, where royal banners ripple above stone walls and rumors move faster than merchants. Beneath the city's polished order lies unease: missing livestock in the countryside, secret cult meetings at night, and frightened whispers about a glowing crater where no crater should be.</p>
+            <p>The world of <strong>Aetherfall</strong> is old with divine consequence. Lumina and Umbros clashed in the Void, the first gods shaped the land, and the Sundering Wars left scars still pulsing beneath every continent.</p>
+            <p>You are not stepping into a simple campaign. You are stepping into a worldbook made dangerous.</p>
+          `;
+        },
+        options: [
+          { label: "Begin Quest 1: The Fallen Star", goto: "fallenStarIntro" },
+          { label: "Investigate Blood in the Market", goto: "bloodMarketIntro" },
+          { label: "Travel toward Ashkar and the arena", goto: "arenaIntro" }
+        ]
+      },
+
+      fallenStarIntro: {
+        enter() {
+          game.location = "Eldoria Outskirts";
+          game.chapter = "Quest 1: The Fallen Star";
+        },
+        text: `
+          <p>Toma the Farmer meets you on the edge of his ruined field, hat in trembling hands. "It fell from the sky," he says. "And now the animals won't come back."</p>
+          <p>The crater glows in the distance with a light too beautiful to trust. Tracks circle it. Something beneath is humming with power. Something else is praying.</p>
+        `,
+        options: [
+          {
+            label: "Destroy the crystal",
+            check: { ability: "str", dc: 14 },
+            success: "fallenStarDestroy",
+            failure: "fallenStarStudy"
+          },
+          { label: "Study the crystal", goto: "fallenStarStudy" },
+          { label: "Join the cult beneath the crater", goto: "fallenStarCult" }
+        ]
+      },
+
+      fallenStarDestroy: {
+        text: `
+          <p>You smash the crystal in a spray of corrupted light. The crater howls, the ritual collapses, and the warped beasts scatter into the dark.</p>
+          <p>The village is saved. The corruption recedes. You feel the world notice.</p>
+        `,
+        options: [
+          {
+            label: "Claim your reward",
+            effect() {
+              game.nerdCred += 3;
+              game.gold += 25;
+              game.inventory.push("Rare Herb");
+              game.quests.fallenStar = "Resolved. The village was saved.";
+              game.completedQuests += 1;
+              game.secretFlags.savedVillage = true;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      fallenStarStudy: {
+        text: `
+          <p>You touch the crystal and knowledge slams through your skull like a second sunrise. Power answers. So does corruption. The crater does not reject you. It welcomes you.</p>
+        `,
+        options: [
+          {
+            label: "Accept the power and move on",
+            effect() {
+              game.abilities.int = Math.min(60, game.abilities.int + 2);
+              game.hp = Math.max(1, game.hp - 4);
+              game.nerdCred += 2;
+              game.quests.fallenStar = "Studied. Power gained, corruption risk increased.";
+              game.completedQuests += 1;
+              game.secretFlags.foundShadowTruth = true;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      fallenStarCult: {
+        text: `
+          <p>A robed acolyte lifts their hood and smiles as though you have passed an exam no one else knew was being graded.</p>
+          <p>"Umbros rewards courage," they whisper. "Or desperation. We do not always distinguish."</p>
+        `,
+        options: [
+          {
+            label: "Accept the shadow path",
+            effect() {
+              game.nerdCred += 4;
+              game.quests.main = "Shadow path opened.";
+              game.quests.fallenStar = "Resolved through corruption.";
+              game.completedQuests += 1;
+              game.secretFlags.joinedCult = true;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      bloodMarketIntro: {
+        enter() {
+          game.location = "Valencrest";
+          game.chapter = "Quest 2: Blood in the Market";
+        },
+        text: `
+          <p>A city guard waves you toward a sheet-covered body in the market. Torn cloth. Poison traces. Witnesses with bad memories and worse honesty.</p>
+          <p>"We need answers," the guard says. "And quickly."</p>
+        `,
+        options: [
+          {
+            label: "Investigate properly",
+            check: { ability: "int", dc: 14 },
+            success: "bloodMarketSolved",
+            failure: "bloodMarketWrong"
+          },
+          {
+            label: "Follow a masked noble through the alleys",
+            goto: "nightMasksIntro"
+          },
+          { label: "Accuse a merchant immediately", goto: "bloodMarketWrong" }
+        ]
+      },
+
+      bloodMarketSolved: {
+        text: `
+          <p>You follow the clues past panic and into privilege. The killer is tied to nobility, which explains the silence, the fear, and the quality of the cover-up.</p>
+          <p>Justice costs more when the guilty can afford carpets.</p>
+        `,
+        options: [
+          {
+            label: "Bring the truth into the light",
+            effect() {
+              game.gold += 20;
+              game.nerdCred += 3;
+              game.inventory.push("Rule Binder");
+              game.quests.bloodMarket = "Resolved. Justice served.";
+              game.completedQuests += 1;
+              game.secretFlags.solvedMarket = true;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      bloodMarketWrong: {
+        text: `
+          <p>You accuse the wrong suspect. The market turns on you immediately, and the actual killer disappears into the crowd.</p>
+        `,
+        options: [
+          {
+            label: "Retreat with less reputation than before",
+            effect() {
+              game.nerdCred = Math.max(0, game.nerdCred - 2);
+              game.quests.bloodMarket = "Botched. Reputation damaged.";
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      arenaIntro: {
+        enter() {
+          game.location = "Ashkar";
+          game.chapter = "Quest 3: Arena Champion";
+        },
+        text: `
+          <p>Ashkar is heat, iron, wagers, and the smell of victory trying to overpower blood. Fighters shout, crowds roar, and somewhere beneath the spectacle an illegal betting ring quietly calculates your odds.</p>
+          <p>The arena champion watches you with the calm of a person who has survived being underestimated too many times to enjoy it anymore.</p>
+        `,
+        options: [
+          {
+            label: "Enter the arena trials",
+            combat: "comicEnforcer",
+            win: "arenaWin",
+            lose: "endingDefeat"
+          },
+          {
+            label: "Chase rumors toward Molgrath's forge",
+            goto: "stormbreakerIntro"
+          },
+          { label: "Throw the fight and join the betting ring", goto: "arenaThrow" }
+        ]
+      },
+
+      arenaWin: {
+        text: `
+          <p>You fight through the tiers and earn the crowd the hard way. The champion salutes you with the respect reserved for people who bleed honestly.</p>
+        `,
+        options: [
+          {
+            label: "Take the arena reward",
+            effect() {
+              game.gold += 80;
+              game.nerdCred += 4;
+              game.inventory.push("Tiny Rage Elixir");
+              game.quests.arenaChampion = "Resolved. Arena conquered.";
+              game.completedQuests += 1;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      arenaThrow: {
+        text: `
+          <p>You deliberately fall short and the underground ring opens to you like a second city built under the first. It is profitable, dirty, and definitely not healthy.</p>
+        `,
+        options: [
+          {
+            label: "Take the dirty gold",
+            effect() {
+              game.gold += 60;
+              game.nerdCred += 1;
+              game.quests.arenaChampion = "Side route unlocked through the betting ring.";
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      hubAetherfall: {
+        enter() {
+          game.location = "Aetherfall Crossroads";
+          game.chapter = "The Shadow War";
+        },
+        text() {
+          return `
+            <p>The world opens wider now. Eldoria's nobles are unstable. Drakmor burns and dares you to survive it. Sylvaris is sick at the roots. The Shadow Cult moves beneath all three like a second map hidden under the first.</p>
+            <p><strong>Campaign:</strong><br>${worldbook.campaign.acts.join("<br>")}</p>
+          `;
+        },
+        options: [
+          { label: "Travel to Sylvaris and cleanse corruption", goto: "rootsIntro" },
+          { label: "Track the Ember Wolf alpha", goto: "emberHuntIntro" },
+          { label: "Enter the Whispering Depths", goto: "whisperingDepthsIntro" },
+          { label: "Visit Molgrath and pursue Stormbreaker", goto: "stormbreakerIntro" },
+          { label: "Investigate the Night of Masks", goto: "nightMasksIntro" },
+          {
+            label: "Seek hidden truth before the finale",
+            when() { return game.secretFlags.foundShadowTruth && game.completedQuests >= 3; },
+            goto: "secretTruth"
+          },
+          { label: "Begin the finale path toward Umbros", goto: "umbrosFinale" }
+        ]
+      },
+
+      rootsIntro: {
+        enter() {
+          game.location = "Sylvaris";
+          game.chapter = "Quest 4: Roots of Corruption";
+        },
+        text: `
+          <p>The heart-tree of Sylvaris pulses with rot under its bark. Druids whisper prayers. Elves watch with arrows half-drawn. Four nature stones circle the roots, dormant and waiting for alignment.</p>
+        `,
+        options: [
+          {
+            label: "Cleanse the tree",
+            check: { ability: "wis", dc: 15 },
+            success: "rootsCleanse",
+            failure: "rootsBurn"
+          },
+          { label: "Burn the corruption out", goto: "rootsBurn" }
+        ]
+      },
+
+      rootsCleanse: {
+        text: `<p>The flow restores. The heart-tree exhales. Sylvaris accepts you as an ally rather than an intruder.</p>`,
+        options: [
+          {
+            label: "Take the forest's blessing",
+            effect() {
+              game.nerdCred += 4;
+              game.inventory.push("Neurobiology Notes");
+              game.quests.rootsOfCorruption = "Resolved. Forest cleansed.";
+              game.completedQuests += 1;
+              game.secretFlags.cleansedForest = true;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      rootsBurn: {
+        text: `<p>You solve corruption with fire. It works, technically. The relic survives. Trust does not.</p>`,
+        options: [
+          {
+            label: "Take the fire relic and leave quickly",
+            effect() {
+              game.inventory.push("Bazinga Bomb");
+              game.nerdCred += 2;
+              game.quests.rootsOfCorruption = "Resolved violently. Forest relations damaged.";
+              game.completedQuests += 1;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      emberHuntIntro: {
+        enter() {
+          game.location = "Sylvaris";
+          game.chapter = "Quest 10: Ember Hunt";
+          game.quests.emberHunt = "Active. Track the Ember Wolf alpha.";
+        },
+        text: `
+          <p>Burn marks slash through living roots, and the druid scouts pull you toward a clearing where an Ember Wolf alpha has turned fear into territory.</p>
+          <p>You can kill it for materials, or somehow convince a wildfire with teeth to stand down.</p>
+        `,
+        options: [
+          {
+            label: "Fight the Ember Wolf alpha",
+            combat: "emberAlpha",
+            win: "emberHuntWin",
+            lose: "endingDefeat"
+          },
+          {
+            label: "Attempt to tame it instead",
+            check: { ability: "cha", dc: 15 },
+            success: "emberTame",
+            failure: "emberHuntWin"
+          }
+        ]
+      },
+
+      emberHuntWin: {
+        text: `<p>The alpha falls in sparks and smoke. The forest is safer, though definitely not calmer.</p>`,
+        options: [
+          {
+            label: "Harvest the remains and return",
+            effect() {
+              game.inventory.push("Greater Healing Potion");
+              game.inventory.push("Rare Herb");
+              game.nerdCred += 3;
+              game.quests.emberHunt = "Resolved through the hunt.";
+              game.completedQuests += 1;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      emberTame: {
+        text: `<p>Against all reason, the alpha lowers its head and accepts your presence. The druids look at you with the exact expression people reserve for miracles they do not trust yet.</p>`,
+        options: [
+          {
+            label: "Return with a new legend",
+            effect() {
+              game.nerdCred += 5;
+              game.secretFlags.tamedEmberWolf = true;
+              game.quests.emberHunt = "Resolved through taming. The alpha now walks your shadow.";
+              game.completedQuests += 1;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      whisperingDepthsIntro: {
+        enter() {
+          game.location = "Whispering Depths";
+          game.chapter = "Quest 6: Whispering Depths";
+        },
+        text: `
+          <p>The mine is haunted by whispers that sound less like ghosts and more like bargains waiting for tired people. At the bottom sits the Hollow King, very dead and very unwilling to treat that as a permanent condition.</p>
+        `,
+        options: [
+          {
+            label: "Face the Hollow King",
+            combat: "shadowSheldon",
+            win: "whisperingWin",
+            lose: "endingDefeat"
+          }
+        ]
+      },
+
+      whisperingWin: {
+        text: `<p>The whispers stop. The mine settles. Something legendary almost falls into your hands, then leaves it to probability.</p>`,
+        options: [
+          {
+            label: "Move on with the silence you earned",
+            effect() {
+              game.nerdCred += 5;
+              game.gold += 100;
+              game.quests.whisperingDepths = "Resolved. The Hollow King was defeated.";
+              game.completedQuests += 1;
+              game.secretFlags.foundShadowTruth = true;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      stormbreakerIntro: {
+        enter() {
+          game.location = "Molgrath";
+          game.chapter = "Quest 7: Stormbreaker";
+          game.quests.stormbreaker = "Active. Recover the forge and reforge Stormbreaker.";
+        },
+        text: `
+          <p>Molgrath's forge district glows red through volcanic haze. A master smith tells you the old anvil can still birth relics, but only if the Iron Revenant guarding it stops treating everyone like unfinished scrap.</p>
+        `,
+        options: [
+          {
+            label: "Fight the Iron Revenant",
+            combat: "ironRevenant",
+            win: "stormbreakerForge",
+            lose: "endingDefeat"
+          },
+          {
+            label: "Search the forge for hidden shards first",
+            check: { ability: "int", dc: 15 },
+            success: "stormbreakerShards",
+            failure: "stormbreakerForge"
+          }
+        ]
+      },
+
+      stormbreakerShards: {
+        text: `<p>You uncover storm-marked metal fragments and a journal describing the weapon's binding rites. The forge is not pleased that you can read.</p>`,
+        options: [
+          {
+            label: "Face the guardian with better odds",
+            effect() {
+              game.inventory.push("Inventor's Toolkit");
+              game.inventory.push("Tiny Rage Elixir");
+            },
+            combat: "ironRevenant",
+            win: "stormbreakerForge",
+            lose: "endingDefeat"
+          }
+        ]
+      },
+
+      stormbreakerForge: {
+        text: `
+          <p>The forge roars open. The anvil survives. Steel, heat, and thunder remember each other.</p>
+          <p>If you have the materials, you can craft Stormbreaker now. If not, the smith marks your name and tells you to come back worthy.</p>
+        `,
+        options: [
+          {
+            label: "Take the forge reward and return",
+            effect() {
+              game.gold += 30;
+              game.nerdCred += 3;
+              game.quests.stormbreaker = "Forge reclaimed. Craft Stormbreaker from the crafting menu.";
+              game.completedQuests += 1;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      nightMasksIntro: {
+        enter() {
+          game.location = "Valencrest";
+          game.chapter = "Quest 9: Night of Masks";
+          game.quests.nightOfMasks = "Active. Infiltrate the masquerade and identify the target.";
+        },
+        text: `
+          <p>The masquerade unfolds behind silk curtains and armed smiles. Every guest hides either a blade, a secret, or both. You need the right target before the wrong person notices your face belongs nowhere here.</p>
+        `,
+        options: [
+          {
+            label: "Blend in and read the room",
+            check: { ability: "cha", dc: 15 },
+            success: "nightMasksExpose",
+            failure: "nightMasksFight"
+          },
+          {
+            label: "Move through the shadows and strike first",
+            combat: "maskAssassin",
+            win: "nightMasksFightWin",
+            lose: "endingDefeat"
+          }
+        ]
+      },
+
+      nightMasksExpose: {
+        text: `
+          <p>You track the nervous glances, the too-careful laughter, and the noble who applauds half a beat too late whenever death is mentioned. The conspiracy surfaces in whispers and panic.</p>
+        `,
+        options: [
+          {
+            label: "Expose the plot and leave before speeches begin",
+            effect() {
+              game.nerdCred += 4;
+              game.gold += 35;
+              game.inventory.push("Signed Captain Photo");
+              game.quests.nightOfMasks = "Resolved through intrigue.";
+              game.completedQuests += 1;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      nightMasksFight: {
+        text: `<p>Your cover slips. A masked assassin steps from the ballroom like the party had been waiting for music and blood to overlap.</p>`,
+        options: [
+          {
+            label: "Fight",
+            combat: "maskAssassin",
+            win: "nightMasksFightWin",
+            lose: "endingDefeat"
+          }
+        ]
+      },
+
+      nightMasksFightWin: {
+        text: `<p>The assassin falls into velvet and expensive scandal. The room learns quickly that subtlety is no longer an option.</p>`,
+        options: [
+          {
+            label: "Leave with stolen secrets",
+            effect() {
+              game.nerdCred += 3;
+              game.inventory.push("Smirk Badge");
+              game.quests.nightOfMasks = "Resolved through steel.";
+              game.completedQuests += 1;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      secretTruth: {
+        enter() {
+          game.location = "Whispering Depths";
+          game.chapter = "Hidden Arc: The Shadow Truth";
+        },
+        text: `
+          <p>By now, the clues align. The cult was never merely summoning Umbros. It was preparing a vessel. If you have walked too close to shadow, the final choice will recognize you.</p>
+          <p>That is not a prophecy. It is a warning.</p>
+        `,
+        options: [
+          {
+            label: "Carry this truth into the finale",
+            effect() {
+              game.secretFlags.foundShadowTruth = true;
+              game.nerdCred += 2;
+            },
+            goto: "hubAetherfall"
+          }
+        ]
+      },
+
+      umbrosFinale: {
+        enter() {
+          game.location = "Umbros Rift";
+          game.chapter = "Quest 100: The End of Shadows";
+        },
+        text: `
+          <p>You stand at the threshold of the final choice. The avatar of Umbros is close now, vast and patient and hungry in the way only cosmic things can be.</p>
+          <p>If you are not ready, the Rift will not care.</p>
+        `,
+        options: [
+          {
+            label: "Fight the Umbros Avatar",
+            combat: "vortexDragon",
+            win: "endingLegendary",
+            lose: "endingDefeat"
+          }
+        ]
+      },
+
+      retreat: {
+        text: `<p>You flee with your life, your pride lightly bruised, and a renewed respect for strategic cowardice.</p>`,
+        options: [{ label: "Return to the road", goto: "hubAetherfall" }]
+      },
+
+      endingLegendary: {
+        text() {
+          const score =
+            game.completedQuests +
+            Math.floor(game.nerdCred / 4) +
+            (game.inventory.length >= 10 ? 1 : 0) +
+            (game.secretFlags.cleansedForest ? 1 : 0) +
+            (game.secretFlags.solvedMarket ? 1 : 0) +
+            (game.secretFlags.forgedStormbreaker ? 1 : 0) +
+            (game.secretFlags.tamedEmberWolf ? 1 : 0) -
+            (game.secretFlags.joinedCult ? 2 : 0);
+
+          if (score >= 8) {
+            return `
+              <p>Aetherfall survives because you did more than win fights. You solved, explored, collected, uncovered secrets, and held the world together when it wanted to split.</p>
+              <p>The stars remember your name. So do the people who still get to see them.</p>
+              <p><strong>True Ending.</strong> Quests: ${game.completedQuests}. Nerd Cred: ${game.nerdCred}. Gold: ${game.gold}.</p>
+            `;
+          }
+          if (game.secretFlags.joinedCult) {
+            return `
+              <p>You sealed one darkness only to leave another inside yourself. The bards will argue for years whether you were savior or warning.</p>
+              <p><strong>Shadow Ending.</strong></p>
+            `;
+          }
+          if (score >= 5) {
+            return `
+              <p>The war ends, though not cleanly. Some kingdoms heal. Some secrets stay buried. Your name survives in the unfinished parts.</p>
+              <p><strong>Heroic Ending.</strong></p>
+            `;
+          }
+          return `
+            <p>You won the last battle, but much of Aetherfall slipped through your hands. Peace came at a thinner margin than anyone wanted.</p>
+            <p><strong>Fractured Ending.</strong></p>
+          `;
+        },
+        options: [
+          {
+            label: "Play again",
+            effect() { location.reload(); },
+            goto: "intro"
+          }
+        ]
+      },
+
+      endingMixed: {
+        text: `
+          <p>You absorb the shadow and survive it, which is not the same thing as defeating it. Aetherfall is safe for one terrible moment and then no longer certain of what you will become.</p>
+          <p><strong>Corruption Ending.</strong></p>
+        `,
+        options: [
+          {
+            label: "Play again",
+            effect() { location.reload(); },
+            goto: "intro"
+          }
+        ]
+      },
+
+      endingDefeat: {
+        text: `
+          <p>The world outpaces you this time. The shadow wins the scene, if not the final story. Aetherfall continues, wounded but not finished, and somewhere else a new hero picks up a different quest log.</p>
+          <p><strong>Defeat Ending.</strong></p>
+        `,
+        options: [
+          {
+            label: "Try again",
+            effect() { location.reload(); },
+            goto: "intro"
+          }
+        ]
+      }
+    };
+
+    document.getElementById("playerName").addEventListener("input", updateStartAvailability);
+
+    document.getElementById("classSelect").addEventListener("change", () => {
+      Object.keys(abilityAlloc).forEach(key => abilityAlloc[key] = 0);
+      renderAllocator();
+      openModal("allocatorModal");
+      updateStartAvailability();
+    });
+
+    document.getElementById("openAllocatorBtn").addEventListener("click", () => {
+      renderAllocator();
+      openModal("allocatorModal");
+    });
+
+    document.getElementById("closeAllocatorBtn").addEventListener("click", () => {
+      closeModal("allocatorModal");
+    });
+
+    document.getElementById("confirmAllocatorBtn").addEventListener("click", () => {
+      closeModal("allocatorModal");
+      updateStartAvailability();
+    });
+
+    document.getElementById("startBtn").addEventListener("click", startAdventure);
+    document.getElementById("loadFromStartBtn").addEventListener("click", loadGame);
+    document.getElementById("saveBtn").addEventListener("click", saveGame);
+    document.getElementById("loadBtn").addEventListener("click", loadGame);
+    document.getElementById("inventoryBtn").addEventListener("click", openInventory);
+    document.getElementById("craftBtn").addEventListener("click", openCrafting);
+
+    window.adjustAbility = adjustAbility;
+    window.closeModal = closeModal;
+    window.combatAction = combatAction;
+    window.craftItem = craftItem;
+    window.combineItems = combineItems;
+    window.answerQuestionEvent = answerQuestionEvent;
+    window.showScene = showScene;
+    window.useInventoryItem = useInventoryItem;
+
+    updateStartAvailability();
+  </script>
+</body>
+</html>
+
